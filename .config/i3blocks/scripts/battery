@@ -1,0 +1,52 @@
+#!/bin/bash
+# i3blocks: battery. Left click toggles between percentage and time left.
+BAT=${BAT_DIR:-$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -n1)}
+[[ -d $BAT ]] || { echo "BAT n/a"; exit 0; }
+STATE=${XDG_RUNTIME_DIR:-/tmp}/i3blocks-battery-mode
+
+if [[ $BLOCK_BUTTON == 1 ]]; then
+  [[ $(cat "$STATE" 2>/dev/null) == time ]] && echo pct >"$STATE" || echo time >"$STATE"
+fi
+mode=$(cat "$STATE" 2>/dev/null || echo pct)
+
+cap=$(<"$BAT/capacity")
+status=$(<"$BAT/status")
+rd() { [[ -r $BAT/$1 ]] && cat "$BAT/$1"; }
+
+# energy_* (µWh) + power_now (µW), or charge_* (µAh) + current_now (µA)
+now=$(rd energy_now);  full=$(rd energy_full);  rate=$(rd power_now)
+if [[ -z $now ]]; then now=$(rd charge_now); full=$(rd charge_full); rate=$(rd current_now); fi
+rate=${rate#-}
+
+timeleft=""
+if [[ -n $rate && $rate -gt 0 && -n $now ]]; then
+  if [[ $status == Discharging ]]; then mins=$(( now * 60 / rate ))
+  elif [[ $status == Charging && -n $full ]]; then mins=$(( (full - now) * 60 / rate ))
+  fi
+  [[ -n $mins ]] && timeleft=$(printf '%d:%02d' $((mins/60)) $((mins%60)))
+fi
+yazi: a term
+# icon by level / charging
+if [[ $status == Charging ]]; then icon='󰂄'
+elif [[ $status == Full || $status == "Not charging" && $cap -ge 95 ]]; then icon='󰁹'
+else
+  icons=('󰁺' '󰁻' '󰁼' '󰁽' '󰁾' '󰁿' '󰂀' '󰂁' '󰂂' '󰁹')
+  i=$(( cap / 10 )); (( i > 9 )) && i=9; (( i < 0 )) && i=0
+  icon=${icons[$i]}
+fi
+
+if [[ $mode == time ]]; then
+  case "$status" in
+    Discharging) text=${timeleft:+$timeleft left} ;;
+    Charging)    text=${timeleft:+$timeleft to full} ;;
+  esac
+  text=${text:-$status}
+else
+  text="$cap%"
+fi
+
+echo "$icon $text"
+echo "$icon $cap%"
+if [[ $status != Charging ]] && (( cap <= 15 )); then echo "#d0705a"      
+elif [[ $status == Charging ]]; then echo "#9aa979"                        
+fi

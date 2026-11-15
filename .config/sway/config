@@ -1,0 +1,217 @@
+# Default config for sway
+#
+# Read `man 5 sway` for a complete reference.
+
+### Variables
+set $mod Mod4
+set $left h
+set $down j
+set $up k
+set $right l
+set $term foot
+set $menu fuzzel
+
+### Output configuration
+output * bg ~/Pictures/wallpaper_1.png fill
+
+### Input configuration
+input "type:keyboard" {
+    xkb_layout "us"
+    xkb_variant ","
+    xkb_options "grp:alt_shift_toggle"
+}
+
+input "type:touchpad" {
+    tap enabled
+    natural_scroll enabled
+    dwt enabled
+}
+
+### Key bindings
+    # Basics:
+    bindsym $mod+Return exec $term
+    bindsym $mod+Shift+q kill
+    bindsym $mod+d exec $menu
+    floating_modifier $mod normal
+    bindsym $mod+Shift+c reload
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+    # Focus movement:
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Window movement:
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+
+    # Workspaces:
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+
+    # Layout stuff:
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+    bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+    bindsym $mod+f fullscreen
+    bindsym $mod+Shift+space floating toggle
+    bindsym $mod+space focus mode_toggle
+    bindsym $mod+a focus parent
+    bindsym $mod+z exec "swaymsg bar mode toggle; swaymsg gaps inner all toggle 6; swaymsg gaps outer all toggle 2"
+
+    # Scratchpad:
+    bindsym $mod+Shift+minus move scratchpad
+    bindsym $mod+minus scratchpad show
+
+# Resizing mode
+mode "resize" {
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Autostart Helpers
+# exec_always ~/.config/sway/autotile.sh
+
+# Media Keys
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioPause exec playerctl play-pause
+bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioStop exec playerctl stop
+
+# Audio Volume Controls
+bindsym XF86AudioRaiseVolume exec wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioMute        exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+10 i3blocks
+bindsym XF86AudioMicMute     exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+
+# Screen Brightness Controls
+bindsym --locked F3 exec brightnessctl set 5%-
+bindsym --locked F4 exec brightnessctl set +5%
+
+# Lock screen (themed in ~/.config/swaylock/config)
+bindsym $mod+Escape exec swaylock -f
+
+# Screenshot Key
+# Region: copy to clipboard
+bindsym Shift+Print exec grim -g "$(slurp -b 14151688 -c e99b65ff -w 2)" - | wl-copy
+# Region: save to a file
+bindsym $mod+Shift+s exec grim -g "$(slurp -b 14151688 -c e99b65ff -w 2)" ~/Pictures/Screenshots/$(date +%F_%H-%M-%S).png
+# Full screen: save to a file
+bindsym Print exec grim ~/Pictures/Screenshots/$(date +%F_%H-%M-%S).png
+
+# System Services & Pipewire
+exec pipewire
+exec dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
+exec wl-paste -t text --watch clipman store --no-persist
+
+# Wi-Fi menu from the bar opens as a floating window
+for_window [app_id="floating-term"] floating enable, resize set 800 500, move position center
+
+# Idle: dim at 4 min, lock at 5, screen off at 5.5, suspend at 15.
+# Also locks before any suspend (lid close, loginctl suspend).
+exec swayidle -w \
+    timeout 240 'brightnessctl -s set 10%' resume 'brightnessctl -r' \
+    timeout 300 'swaylock -f' \
+    timeout 330 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    timeout 900 'loginctl suspend' \
+    before-sleep 'swaylock -f' \
+    lock 'swaylock -f'
+
+# Don't go idle while something is fullscreen (videos, games)
+for_window [all] inhibit_idle fullscreen
+
+# You log in automatically on tty1, so anyone who gets past the disk
+# password lands on your desktop. Uncomment to lock as soon as sway starts.
+# exec swaylock -f
+
+# Gaps & Borders
+gaps inner 6
+gaps outer 2
+default_border pixel 1
+default_floating_border pixel 1
+
+set $bg      #141516
+set $surface #1f2022
+set $muted   #474042
+set $fg      #e2d3c6
+set $snow    #f1e6dc
+set $dim     #8a8580
+set $ember   #e99b65
+set $amber   #f3bc82
+set $rust    #d0705a
+
+#                       border   bg       text   indicator child_border
+client.focused          $ember   $surface $snow  $amber    $ember
+client.focused_inactive $muted   $bg      $dim   $muted    $muted
+client.unfocused        $surface $bg      $dim   $surface  $surface
+client.urgent           $rust    $rust    $bg    $rust     $rust
+client.background       $bg
+
+# Cursor Theme
+seat seat0 xcursor_theme Adwaita 24
+
+# Status Bar
+bar {
+    position top
+    status_command i3blocks
+    swaybar_command swaybar
+    font pango:Hack Nerd Font 11
+
+    colors {
+        statusline #e2d3c6
+        background #141516
+        separator  #474042
+        #                  border  bg      text
+        focused_workspace  #e99b65 #e99b65 #141516
+        active_workspace   #474042 #1f2022 #e2d3c6
+        inactive_workspace #141516 #141516 #8a8580
+        urgent_workspace   #d0705a #d0705a #141516
+        binding_mode       #f3bc82 #f3bc82 #141516
+    }
+}
+
+include /etc/sway/config.d/*
+

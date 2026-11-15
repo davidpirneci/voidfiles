@@ -1,0 +1,23 @@
+#!/bin/bash
+# i3blocks: volume via wpctl (PipeWire)
+# left click = mute, right click = pavucontrol (if installed), scroll = +/- 5%
+SINK=@DEFAULT_AUDIO_SINK@
+case "$BLOCK_BUTTON" in
+  1) wpctl set-mute "$SINK" toggle ;;
+  3) command -v pavucontrol >/dev/null && setsid -f pavucontrol >/dev/null 2>&1 ;;
+  4) wpctl set-volume -l 1.0 "$SINK" 5%+ ;;
+  5) wpctl set-volume "$SINK" 5%- ;;
+esac
+
+out=$(wpctl get-volume "$SINK" 2>/dev/null) || { echo '󰖁 n/a'; echo; echo "#8a8580"; exit 0; }
+vol=$(awk '{printf "%d", $2*100 + 0.5}' <<<"$out")
+
+if [[ $out == *MUTED* ]]; then
+  echo '󰖁'" $vol%"; echo; echo "#8a8580"    
+elif (( vol == 0 )); then
+  echo '󰕿'" $vol%"
+elif (( vol < 50 )); then
+  echo '󰖀'" $vol%"
+else
+  echo '󰕾'" $vol%"
+fi

@@ -1,0 +1,11 @@
+[mgr]
+ratio          = [ 1, 3, 4 ]   # a bit more room for previews
+sort_dir_first = true
+linemode       = "size"
+show_hidden    = false         # press . to toggle
+
+[opener]
+edit = [
+	{ run = "${EDITOR:-nvim} %s", desc = "Edit in nvim", block = true, for = "unix" },
+]
+
