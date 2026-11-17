@@ -146,6 +146,7 @@ bindsym Print exec grim ~/Pictures/Screenshots/$(date +%F_%H-%M-%S).png
 exec pipewire
 exec dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_CURRENT_DESKTOP SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME
 exec wl-paste -t text --watch clipman store --no-persist
+exec gnome-keyring-daemon --start --components=secrets
 
 # Wi-Fi menu from the bar opens as a floating window
 for_window [app_id="floating-term"] floating enable, resize set 800 500, move position center
