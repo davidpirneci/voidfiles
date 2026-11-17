@@ -1,0 +1,4 @@
+
+[Default Applications]
+x-scheme-handler/jetbrains=jetbrainsd.desktop
+application/pdf=org.pwmt.zathura.desktop

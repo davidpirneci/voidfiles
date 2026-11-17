@@ -1,0 +1,67 @@
+# --- behaviour ------------------------------------------------------
+set selection-clipboard  clipboard   # yank selections to wl-clipboard, not PRIMARY
+set adjust-open          width
+set scroll-page-aware    true
+set scroll-step          60
+set incremental-search   true
+set window-title-basename true
+set statusbar-home-tilde true
+set guioptions           ""          # no statusbar/inputbar until needed (: shows it)
+set font                 "Hack Nerd Font 11"
+set page-padding         4
+set database             sqlite      # remembers last page per file
+
+# --- vim-ish keys (j/k/gg/G, /, n/N, ^d/^u, marks already work) -----
+map d  scroll half-down
+map u  scroll half-up
+map J  zoom out
+map K  zoom in
+map D  toggle_page_mode
+map R  rotate
+map r  reload
+map i  recolor
+map s  toggle_statusbar
+map <C-n> navigate next
+map <C-p> navigate previous
+map [fullscreen] d scroll half-down
+map [fullscreen] u scroll half-up
+map [fullscreen] i recolor
+
+# --- colors ---------------------------------------------------------
+set default-bg              "#141516"
+set default-fg              "#e2d3c6"
+
+set statusbar-bg            "#1d1e20"
+set statusbar-fg            "#c9bdb3"
+set inputbar-bg             "#141516"
+set inputbar-fg             "#f1e6dc"
+
+set notification-bg         "#141516"
+set notification-fg         "#e2d3c6"
+set notification-error-bg   "#141516"
+set notification-error-fg   "#d0705a"
+set notification-warning-bg "#141516"
+set notification-warning-fg "#e9a35f"
+
+set completion-bg           "#1d1e20"
+set completion-fg           "#c9bdb3"
+set completion-group-bg     "#141516"
+set completion-group-fg     "#e99b65"
+set completion-highlight-bg "#474042"
+set completion-highlight-fg "#f1e6dc"
+
+set index-bg                "#141516"
+set index-fg                "#e2d3c6"
+set index-active-bg         "#474042"
+set index-active-fg         "#f3bc82"
+
+set highlight-color         "rgba(233,155,101,0.35)"   # search hits
+set highlight-active-color  "rgba(243,188,130,0.55)"   # current hit
+set highlight-fg            "#141516"
+
+# dark mode: pages are recoloured into the palette, press i to toggle
+set recolor                 true
+set recolor-keephue         true    # keeps images/diagrams readable
+set recolor-lightcolor      "#141516"
+set recolor-darkcolor       "#e2d3c6"
+set render-loading          false
