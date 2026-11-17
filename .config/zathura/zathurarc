@@ -60,7 +60,7 @@ set highlight-active-color  "rgba(243,188,130,0.55)"   # current hit
 set highlight-fg            "#141516"
 
 # dark mode: pages are recoloured into the palette, press i to toggle
-set recolor                 true
+set recolor                 false
 set recolor-keephue         true    # keeps images/diagrams readable
 set recolor-lightcolor      "#141516"
 set recolor-darkcolor       "#e2d3c6"
