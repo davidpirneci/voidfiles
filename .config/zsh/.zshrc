@@ -46,3 +46,4 @@ alias x='sudo xbps-install' q='xbps-query -Rs' r='sudo xbps-remove -R'
 # Plugins (keep syntax highlighting last)
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
